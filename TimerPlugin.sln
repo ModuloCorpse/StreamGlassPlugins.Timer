@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimerPlugin", "TimerPlugin.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{CB46BB39-F82A-4B9E-8ED8-EE7F87CD4EB0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamGlass.Core", "..\..\StreamGlass\StreamGlass.Core\StreamGlass.Core.csproj", "{0FCF2CBE-5C4E-4741-AB7D-145D85297D86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamGlass.Core", "..\..\..\StreamGlass\StreamGlass.Core\StreamGlass.Core.csproj", "{0FCF2CBE-5C4E-4741-AB7D-145D85297D86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

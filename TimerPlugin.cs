@@ -11,7 +11,7 @@ namespace TimerPlugin
 
         static TimerPlugin() => JsonHelper.RegisterSerializer(new Timer.JsonSerializer());
 
-        public TimerPlugin() : base("timer") { }
+        public TimerPlugin() : base("Timer") { }
 
         protected override PluginInfo GeneratePluginInfo() => new("1.0.0-beta", "ModuloCorpse<https://www.twitch.tv/chaporon_>");
 

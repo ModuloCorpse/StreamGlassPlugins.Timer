@@ -4,7 +4,7 @@ using CorpseLib.Web.Http;
 
 namespace TimerPlugin
 {
-    public class TimerEndpoint(TimerManager timerManager) : AHTTPEndpoint("/timer")
+    public class TimerEndpoint(TimerManager timerManager) : AHTTPEndpoint("/")
     {
         private readonly TimerManager m_TimerManager = timerManager;
         private static readonly string FORMAT = "${mm}:${ss}";
