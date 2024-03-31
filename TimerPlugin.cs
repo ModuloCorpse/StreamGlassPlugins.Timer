@@ -1,11 +1,10 @@
 ﻿using CorpseLib.Json;
 using CorpseLib.Web.API;
 using StreamGlass.Core.Plugin;
-using StreamGlass.Core.Settings;
 
 namespace TimerPlugin
 {
-    public class TimerPlugin : APlugin
+    public class TimerPlugin : APlugin, IAPIPlugin, ITestablePlugin
     {
         private readonly TimerManager m_TimerManager = new();
 
@@ -15,9 +14,7 @@ namespace TimerPlugin
 
         protected override PluginInfo GeneratePluginInfo() => new("1.0.0-beta", "ModuloCorpse<https://www.twitch.tv/chaporon_>");
 
-        protected override void InitTranslation() { }
-
-        protected override void InitSettings()
+        protected override void OnLoad()
         {
             JsonObject obj = JsonParser.LoadFromFile(GetFilePath("timers.json"));
             List<Timer> timers = obj.GetList<Timer>("timers");
@@ -25,22 +22,14 @@ namespace TimerPlugin
                 m_TimerManager.RegisterTimer(timer);
         }
 
-        protected override void InitPlugin() { }
+        protected override void OnInit() { }
 
-        protected override void InitCommands() { }
-
-        protected override void InitCanals() { }
-
-        protected override AEndpoint[] GetEndpoints() => [
+        public AEndpoint[] GetEndpoints() => [
             new TimerEndpoint(m_TimerManager)
         ];
 
-        protected override void Unregister() { }
+        protected override void OnUnload() { }
 
-        protected override void Update(long deltaTime) { }
-
-        protected override TabItemContent[] GetSettings() => [];
-
-        protected override void TestPlugin() => m_TimerManager.Test(GetFilePath("timer_test.txt"));
+        public void Test() => m_TimerManager.Test(GetFilePath("timer_test.txt"));
     }
 }
