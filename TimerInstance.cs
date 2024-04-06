@@ -8,6 +8,8 @@ namespace TimerPlugin
     {
         private readonly Timer m_Timer = timer;
 
+        public void Clear() => File.WriteAllText(m_Timer.FilePath, string.Empty);
+
         protected override void OnActionStart()
         {
             base.OnActionStart();

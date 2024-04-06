@@ -1,7 +1,4 @@
 ﻿using StreamGlass.Core;
-using static System.Windows.Forms.DataFormats;
-using static TimerPlugin.Timer;
-using System.Windows;
 
 namespace TimerPlugin
 {
@@ -22,16 +19,27 @@ namespace TimerPlugin
             return false;
         }
 
+        public bool StopTimer(string family)
+        {
+            if (m_Instances.TryGetValue(family, out TimerInstance? instance))
+            {
+                instance.Stop();
+                instance.Clear();
+                return true;
+            }
+            return false;
+        }
+
         public void StartTimer(Timer timer)
         {
-            if (m_Instances.TryGetValue(timer.FilePath, out var oldInstance))
+            if (m_Instances.TryGetValue(timer.Family, out TimerInstance? oldInstance))
                 oldInstance.Stop();
             if (!string.IsNullOrEmpty(timer.Scene))
                 StreamGlassCLI.ExecuteCommand(string.Format("OBSScene {0}", timer.Scene));
             TimerInstance instance = new(timer);
-            instance.OnFinish += (sender, e) => m_Instances.Remove(timer.FilePath);
-            instance.OnStop += (sender, e) => m_Instances.Remove(timer.FilePath);
-            m_Instances[timer.FilePath] = instance;
+            instance.OnFinish += (sender, e) => m_Instances.Remove(timer.Family);
+            instance.OnStop += (sender, e) => m_Instances.Remove(timer.Family);
+            m_Instances[timer.Family] = instance;
             instance.Start();
             Timer.AdsInfo? ads = timer.Ads;
             if (ads != null)
@@ -45,7 +53,7 @@ namespace TimerPlugin
         }
         public void Test(string testPath)
         {
-            StartTimer(new Timer(testPath, testPath, "${mm}:${ss}", "Test timer finished", string.Empty, 30, null));
+            StartTimer(new Timer("__TestID__", "__TestFamily__", testPath, "${mm}:${ss}", "Test timer finished", string.Empty, 30, null));
         }
 
         ~TimerManager()

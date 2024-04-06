@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "TimerPlugin": {
+      "commandName": "Executable",
+      "executablePath": "D:\\Programmation\\StreamGlass\\StreamGlass\\bin\\Debug\\net8.0-windows7.0\\StreamGlass.exe",
+      "workingDirectory": "D:\\Programmation\\StreamGlass\\StreamGlass\\bin\\Debug\\net8.0-windows7.0"
+    }
+  }
+}
