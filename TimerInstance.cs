@@ -8,7 +8,7 @@ namespace TimerPlugin
     {
         private readonly Timer m_Timer = timer;
 
-        public void Clear() => File.WriteAllText(m_Timer.FilePath, string.Empty);
+        public void Clear() => StreamGlassContext.UpdateStringSource(m_Timer.StringSource, string.Empty);
 
         protected override void OnActionStart()
         {
@@ -27,7 +27,7 @@ namespace TimerPlugin
             context.AddVariable("mm", string.Format("{0:D2}", remainingTime.Minutes));
             context.AddVariable("s", remainingTime.Seconds);
             context.AddVariable("ss", string.Format("{0:D2}", remainingTime.Seconds));
-            File.WriteAllText(m_Timer.FilePath, Converter.Convert(m_Timer.Format, streamGlassContext, context));
+            StreamGlassContext.UpdateStringSource(m_Timer.StringSource, Converter.Convert(m_Timer.Format, streamGlassContext, context));
             base.OnActionUpdate(elapsed);
         }
 
@@ -35,7 +35,7 @@ namespace TimerPlugin
         {
             StreamGlassContext streamGlassContext = new();
             if (!string.IsNullOrEmpty(m_Timer.FinishMessage))
-                File.WriteAllText(m_Timer.FilePath, Converter.Convert(m_Timer.FinishMessage, streamGlassContext));
+                StreamGlassContext.UpdateStringSource(m_Timer.StringSource, Converter.Convert(m_Timer.FinishMessage, streamGlassContext));
             base.OnActionFinish();
         }
     }

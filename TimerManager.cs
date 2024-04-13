@@ -7,7 +7,12 @@ namespace TimerPlugin
         private readonly Dictionary<string, Timer> m_Timers = [];
         private readonly Dictionary<string, TimerInstance> m_Instances = [];
 
-        public void RegisterTimer(Timer timer) => m_Timers[timer.ID] = timer;
+        public void RegisterTimer(Timer timer)
+        {
+            m_Timers[timer.ID] = timer;
+            StreamGlassContext.CreateStringSource(timer.StringSource);
+            StreamGlassContext.UpdateStringSource(timer.StringSource, string.Empty);
+        }
 
         public bool StartTimer(string timerID)
         {
@@ -50,10 +55,6 @@ namespace TimerPlugin
                 else
                     StreamGlassCLI.ExecuteCommand(adCommand);
             }
-        }
-        public void Test(string testPath)
-        {
-            StartTimer(new Timer("__TestID__", "__TestFamily__", testPath, "${mm}:${ss}", "Test timer finished", string.Empty, 30, null));
         }
 
         ~TimerManager()

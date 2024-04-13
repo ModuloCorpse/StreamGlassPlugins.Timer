@@ -3,7 +3,7 @@ using CorpseLib.Json;
 
 namespace TimerPlugin
 {
-    public class Timer(string id, string family, string filepath, string format, string finishMessage, string scene, int duration, Timer.AdsInfo? ads)
+    public class Timer(string id, string family, string stringSource, string format, string finishMessage, string scene, int duration, Timer.AdsInfo? ads)
     {
         public class JsonSerializer : AJsonSerializer<Timer>
         {
@@ -12,7 +12,7 @@ namespace TimerPlugin
                 if (reader.TryGet("duration", out int duration) &&
                     reader.TryGet("id", out string? id) && id != null &&
                     reader.TryGet("family", out string? family) && family != null &&
-                    reader.TryGet("path", out string? path) && path != null)
+                    reader.TryGet("string_source", out string? stringSource) && stringSource != null)
                 {
                     string endMessage = reader.GetOrDefault("end", string.Empty);
                     string format = reader.GetOrDefault("format", "${mm}:${ss}");
@@ -26,7 +26,7 @@ namespace TimerPlugin
                             ads = new(adsDuration);
                     }
                     string scene = reader.GetOrDefault("scene", string.Empty);
-                    return new(new(id, family, path, format, endMessage, scene, duration, ads));
+                    return new(new(id, family, stringSource, format, endMessage, scene, duration, ads));
                 }
                 return new("Deserialization error", "Cannot deserialize timer");
             }
@@ -35,7 +35,7 @@ namespace TimerPlugin
             {
                 writer["id"] = obj.m_ID;
                 writer["family"] = obj.m_Family;
-                writer["path"] = obj.m_FilePath;
+                writer["string_source"] = obj.m_StringSource;
                 writer["duration"] = obj.m_Duration;
                 writer["end"] = obj.m_FinishMessage;
                 writer["format"] = obj.m_Format;
@@ -64,7 +64,7 @@ namespace TimerPlugin
         private readonly AdsInfo? m_Ads = ads;
         private readonly string m_ID = id;
         private readonly string m_Family = family;
-        private readonly string m_FilePath = filepath;
+        private readonly string m_StringSource = stringSource;
         private readonly string m_Format = format;
         private readonly string m_FinishMessage = finishMessage;
         private readonly string m_Scene = scene;
@@ -73,7 +73,7 @@ namespace TimerPlugin
         public AdsInfo? Ads => m_Ads;
         public string ID => m_ID;
         public string Family => m_Family;
-        public string FilePath => m_FilePath;
+        public string StringSource => m_StringSource;
         public string Format => m_Format;
         public string FinishMessage => m_FinishMessage;
         public string Scene => m_Scene;
