@@ -1,6 +1,8 @@
 ﻿using CorpseLib.Json;
 using CorpseLib.Web.API;
+using StreamGlass.Core;
 using StreamGlass.Core.Plugin;
+using TimerPlugin.Action;
 
 namespace TimerPlugin
 {
@@ -18,6 +20,9 @@ namespace TimerPlugin
             List<Timer> timers = obj.GetList<Timer>("timers");
             foreach (Timer timer in timers)
                 m_TimerManager.RegisterTimer(timer);
+
+            StreamGlassActions.AddAction(new StartTimerAction(m_TimerManager), true, true, true);
+            StreamGlassActions.AddAction(new StopTimerAction(m_TimerManager), true, true, true);
         }
 
         protected override void OnInit() { }
