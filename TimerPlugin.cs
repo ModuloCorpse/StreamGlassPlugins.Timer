@@ -1,4 +1,5 @@
-﻿using CorpseLib.Json;
+﻿using CorpseLib.DataNotation;
+using CorpseLib.Json;
 using CorpseLib.Web.API;
 using StreamGlass.Core;
 using StreamGlass.Core.Plugin;
@@ -10,13 +11,13 @@ namespace TimerPlugin
     {
         private readonly TimerManager m_TimerManager = new();
 
-        static TimerPlugin() => JsonHelper.RegisterSerializer(new Timer.JsonSerializer());
+        static TimerPlugin() => DataHelper.RegisterSerializer(new Timer.DataSerializer());
 
         protected override PluginInfo GeneratePluginInfo() => new("1.0.0-beta", "ModuloCorpse<https://www.twitch.tv/chaporon_>");
 
         protected override void OnLoad()
         {
-            JsonObject obj = JsonParser.LoadFromFile(GetFilePath("settings.json"));
+            DataObject obj = JsonParser.LoadFromFile(GetFilePath("settings.json"));
             List<Timer> timers = obj.GetList<Timer>("timers");
             foreach (Timer timer in timers)
                 m_TimerManager.RegisterTimer(timer);

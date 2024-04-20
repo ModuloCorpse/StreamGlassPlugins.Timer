@@ -1,13 +1,13 @@
 ﻿using CorpseLib;
-using CorpseLib.Json;
+using CorpseLib.DataNotation;
 
 namespace TimerPlugin
 {
     public class Timer(string id, string family, string stringSource, string format, string finishMessage, string scene, int duration, Timer.AdsInfo? ads)
     {
-        public class JsonSerializer : AJsonSerializer<Timer>
+        public class DataSerializer : ADataSerializer<Timer>
         {
-            protected override OperationResult<Timer> Deserialize(JsonObject reader)
+            protected override OperationResult<Timer> Deserialize(DataObject reader)
             {
                 if (reader.TryGet("duration", out int duration) &&
                     reader.TryGet("id", out string? id) && id != null &&
@@ -17,7 +17,7 @@ namespace TimerPlugin
                     string endMessage = reader.GetOrDefault("end", string.Empty);
                     string format = reader.GetOrDefault("format", "${mm}:${ss}");
                     AdsInfo? ads = null;
-                    if (reader.TryGet("ads", out JsonObject? adsObject) && adsObject != null &&
+                    if (reader.TryGet("ads", out DataObject? adsObject) && adsObject != null &&
                         adsObject.TryGet("duration", out int adsDuration))
                     {
                         if (adsObject.TryGet("delay", out int adsDelay))
@@ -31,7 +31,7 @@ namespace TimerPlugin
                 return new("Deserialization error", "Cannot deserialize timer");
             }
 
-            protected override void Serialize(Timer obj, JsonObject writer)
+            protected override void Serialize(Timer obj, DataObject writer)
             {
                 writer["id"] = obj.m_ID;
                 writer["family"] = obj.m_Family;
@@ -42,7 +42,7 @@ namespace TimerPlugin
                 writer["scene"] = obj.m_Scene;
                 if (obj.m_Ads != null)
                 {
-                    JsonObject adsObj = new() { { "duration", obj.m_Ads.Duration } };
+                    DataObject adsObj = new() { { "duration", obj.m_Ads.Duration } };
                     if (obj.m_Ads.Delay != 0)
                         adsObj["delay"] = obj.m_Ads.Delay;
                     writer["ads"] = adsObj;
