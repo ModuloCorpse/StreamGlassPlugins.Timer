@@ -22,8 +22,11 @@ namespace TimerPlugin
             foreach (Timer timer in timers)
                 m_TimerManager.RegisterTimer(timer);
 
-            StreamGlassActions.AddAction(new StartTimerAction(m_TimerManager), true, true, true);
-            StreamGlassActions.AddAction(new StopTimerAction(m_TimerManager), true, true, true);
+            StreamGlassCanals.NewCanal<string>("timer_family_ended");
+
+            StreamGlassActions.AddAction(new CreateTimerAction(m_TimerManager));
+            StreamGlassActions.AddAction(new StartTimerAction(m_TimerManager));
+            StreamGlassActions.AddAction(new StopTimerAction(m_TimerManager));
         }
 
         protected override void OnInit() { }
