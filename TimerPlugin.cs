@@ -31,9 +31,9 @@ namespace TimerPlugin
 
         protected override void OnInit() { }
 
-        public AEndpoint[] GetEndpoints() => [
-            new TimerEndpoint(m_TimerManager)
-        ];
+        public Dictionary<CorpseLib.Web.Http.Path, AEndpoint> GetEndpoints() => new() {
+            { new("/"), new TimerEndpoint(m_TimerManager) }
+        };
 
         protected override void OnUnload() { }
     }

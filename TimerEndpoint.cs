@@ -3,7 +3,7 @@ using CorpseLib.Web.Http;
 
 namespace TimerPlugin
 {
-    public class TimerEndpoint(TimerManager timerManager) : AHTTPEndpoint("/")
+    public class TimerEndpoint(TimerManager timerManager) : AHTTPEndpoint()
     {
         private readonly TimerManager m_TimerManager = timerManager;
 
