@@ -4,21 +4,27 @@ using StreamGlass.Core;
 
 namespace TimerPlugin
 {
-    public class TimerInstance(Timer timer) : TimedAction(250, (timer.Duration - 1) * 1000)
+    public class TimerInstance(Timer timer) : TimedAction(TimeSpan.FromMilliseconds(250), TimeSpan.FromSeconds(timer.Duration - 1))
     {
-        private readonly Timer m_Timer = timer;
+        private Timer m_Timer = timer;
 
         public void Clear() => StreamGlassContext.UpdateStringSource(m_Timer.StringSource, string.Empty);
+
+        public void SetTimer(Timer timer)
+        {
+            m_Timer = timer;
+            SetDuration(TimeSpan.FromSeconds(timer.Duration - 1));
+        }
 
         protected override void OnActionStart()
         {
             base.OnActionStart();
-            OnActionUpdate(0);
+            OnActionUpdate(TimeSpan.Zero);
         }
 
-        protected override void OnActionUpdate(long elapsed)
+        protected override void OnActionUpdate(TimeSpan elapsed)
         {
-            TimeSpan remainingTime = TimeSpan.FromMilliseconds(Duration + 1000 - elapsed);
+            TimeSpan remainingTime = Duration - elapsed;
             StreamGlassContext streamGlassContext = new();
             Context context = new();
             context.AddVariable("h", remainingTime.Hours);

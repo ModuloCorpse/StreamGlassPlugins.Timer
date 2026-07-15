@@ -7,7 +7,6 @@ namespace TimerPlugin
         private readonly Dictionary<string, Timer> m_Timers = [];
         private readonly Dictionary<string, Timer> m_PluginTimers = [];
         private readonly Dictionary<string, TimerInstance> m_Instances = [];
-        private readonly Dictionary<string, TimerInstance> m_LastInstances = [];
 
         public void RegisterTimer(Timer timer)
         {
@@ -36,8 +35,7 @@ namespace TimerPlugin
 
         public bool StopTimer(string family)
         {
-            if (m_Instances.TryGetValue(family, out TimerInstance? instance) ||
-                m_LastInstances.TryGetValue(family, out instance))
+            if (m_Instances.TryGetValue(family, out TimerInstance? instance))
             {
                 instance.Stop();
                 instance.Clear();
@@ -46,23 +44,28 @@ namespace TimerPlugin
             return false;
         }
 
-        private void OnInstanceFinish(TimerInstance instance, Timer timer)
+        private void OnInstanceFinish(Timer timer)
         {
             StreamGlassCanals.Emit("timer_family_ended", timer.Family);
-            m_LastInstances[timer.Family] = instance;
             m_Instances.Remove(timer.Family);
         }
 
         public void StartTimer(Timer timer)
         {
-            if (m_Instances.TryGetValue(timer.Family, out TimerInstance? oldInstance))
-                oldInstance.Stop();
+            if (m_Instances.TryGetValue(timer.Family, out TimerInstance? instance))
+            {
+                instance.Stop();
+                instance.SetTimer(timer);
+            }
+            else
+            {
+                instance = new(timer);
+                instance.OnFinish += (sender, e) => OnInstanceFinish(timer);
+                m_Instances[timer.Family] = instance;
+            }
+
             if (!string.IsNullOrEmpty(timer.Scene))
                 StreamGlassActions.Call("ChangeScene", timer.Scene);
-            TimerInstance instance = new(timer);
-            instance.OnFinish += (sender, e) => OnInstanceFinish(instance, timer);
-            instance.OnStop += (sender, e) => OnInstanceFinish(instance, timer);
-            m_Instances[timer.Family] = instance;
             instance.Start();
             Timer.AdsInfo? ads = timer.Ads;
             if (ads != null)

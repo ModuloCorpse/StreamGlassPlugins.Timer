@@ -1,6 +1,6 @@
 ﻿using CorpseLib.DataNotation;
 using CorpseLib.Json;
-using CorpseLib.Web.API;
+using CorpseLib.Network.API;
 using StreamGlass.Core;
 using StreamGlass.Core.Plugin;
 using TimerPlugin.Action;
@@ -31,9 +31,9 @@ namespace TimerPlugin
 
         protected override void OnInit() { }
 
-        public Dictionary<CorpseLib.Web.Http.Path, AEndpoint> GetEndpoints() => new() {
-            { new("/"), new TimerEndpoint(m_TimerManager) }
-        };
+        public AEndpoint[] GetEndpoints() => [
+            new TimerEndpoint(m_TimerManager)
+        ];
 
         protected override void OnUnload() { }
     }

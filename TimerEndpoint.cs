@@ -1,18 +1,18 @@
-﻿using CorpseLib.Web.API;
-using CorpseLib.Web.Http;
+﻿using CorpseLib.Network.API;
+using CorpseLib.Network.Http;
 
 namespace TimerPlugin
 {
-    public class TimerEndpoint(TimerManager timerManager) : AHTTPEndpoint()
+    public class TimerEndpoint(TimerManager timerManager) : AHTTPEndpoint(new())
     {
         private readonly TimerManager m_TimerManager = timerManager;
 
         protected override Response OnPostRequest(Request request)
         {
-            if (request.HaveParameter("id") && request.HaveParameter("stop"))
+            if (request.HasParameter("id") && request.HasParameter("stop"))
                 return new(400, "Bad Request", "Request have both id and stop parameter");
 
-            if (request.HaveParameter("id"))
+            if (request.HasParameter("id"))
             {
                 string id = request.GetParameter("id");
                 if (!string.IsNullOrEmpty(id))
@@ -23,7 +23,7 @@ namespace TimerPlugin
                 }
                 return new(400, "Bad Request", "Missing id value in request parameters");
             }
-            else if (request.HaveParameter("stop"))
+            else if (request.HasParameter("stop"))
             {
                 string stop = request.GetParameter("stop");
                 if (!string.IsNullOrEmpty(stop))
