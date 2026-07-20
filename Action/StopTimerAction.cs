@@ -14,9 +14,9 @@ namespace TimerPlugin.Action
 
         private readonly TimerManager m_Manager = manager;
 
-        public override object?[] Call(object?[] args)
+        public override async Task<object?[]> Call(object?[] args)
         {
-            m_Manager.StopTimer((string)args[0]!);
+            await m_Manager.StopTimer((string)args[0]!);
             return [];
         }
     }

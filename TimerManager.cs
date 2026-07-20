@@ -22,65 +22,65 @@ namespace TimerPlugin
             StreamGlassContext.UpdateStringSource(timer.StringSource, string.Empty);
         }
 
-        public bool StartTimer(string timerID)
+        public async Task<bool> StartTimer(string timerID)
         {
             if (m_Timers.TryGetValue(timerID, out Timer? timer) ||
                 m_PluginTimers.TryGetValue(timerID, out timer))
             {
-                StartTimer(timer);
+                await StartTimer(timer);
                 return true;
             }
             return false;
         }
 
-        public bool StopTimer(string family)
+        public async Task<bool> StopTimer(string family)
         {
             if (m_Instances.TryGetValue(family, out TimerInstance? instance))
             {
-                instance.Stop();
+                await instance.Stop();
                 instance.Clear();
                 return true;
             }
             return false;
         }
 
-        private void OnInstanceFinish(Timer timer)
+        private async Task OnInstanceFinish(Timer timer)
         {
-            StreamGlassCanals.Emit("timer_family_ended", timer.Family);
+            await StreamGlassCanals.Emit("timer_family_ended", timer.Family);
             m_Instances.Remove(timer.Family);
         }
 
-        public void StartTimer(Timer timer)
+        public async Task StartTimer(Timer timer)
         {
             if (m_Instances.TryGetValue(timer.Family, out TimerInstance? instance))
             {
-                instance.Stop();
+                await instance.Stop();
                 instance.SetTimer(timer);
             }
             else
             {
                 instance = new(timer);
-                instance.OnFinish += (sender, e) => OnInstanceFinish(timer);
+                instance.OnFinish += async () => await OnInstanceFinish(timer);
                 m_Instances[timer.Family] = instance;
             }
 
             if (!string.IsNullOrEmpty(timer.Scene))
-                StreamGlassActions.Call("ChangeScene", timer.Scene);
-            instance.Start();
+                await StreamGlassActions.Call("ChangeScene", timer.Scene);
+            await instance.Start();
             Timer.AdsInfo? ads = timer.Ads;
             if (ads != null)
             {
                 if (ads.Delay > 0)
-                    Task.Delay(ads.Delay * 1000).ContinueWith(_ => StreamGlassActions.Call("TwitchAd", ads.Duration));
+                    await Task.Delay(ads.Delay * 1000).ContinueWith(_ => StreamGlassActions.Call("TwitchAd", ads.Duration));
                 else
-                    StreamGlassActions.Call("TwitchAd", ads.Duration);
+                    await StreamGlassActions.Call("TwitchAd", ads.Duration);
             }
         }
 
         ~TimerManager()
         {
             foreach (var pair in m_Instances)
-                pair.Value.Stop();
+                _ = pair.Value.Stop();
         }
     }
 }

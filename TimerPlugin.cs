@@ -15,7 +15,7 @@ namespace TimerPlugin
 
         protected override PluginInfo GeneratePluginInfo() => new("1.0.0-beta", "ModuloCorpse<https://www.twitch.tv/chaporon_>");
 
-        protected override void OnLoad()
+        protected override async Task OnLoad()
         {
             DataObject obj = JsonParser.LoadFromFile(GetFilePath("settings.json"));
             List<Timer> timers = obj.GetList<Timer>("timers");
@@ -29,12 +29,12 @@ namespace TimerPlugin
             StreamGlassActions.AddAction(new StopTimerAction(m_TimerManager));
         }
 
-        protected override void OnInit() { }
+        protected override async Task OnInit() { }
 
         public AEndpoint[] GetEndpoints() => [
             new TimerEndpoint(m_TimerManager)
         ];
 
-        protected override void OnUnload() { }
+        protected override async Task OnUnload() { }
     }
 }

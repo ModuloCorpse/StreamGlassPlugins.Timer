@@ -7,7 +7,7 @@ namespace TimerPlugin
     {
         private readonly TimerManager m_TimerManager = timerManager;
 
-        protected override Response OnPostRequest(Request request)
+        protected override async Task<Response> OnPostRequest(Request request)
         {
             if (request.HasParameter("id") && request.HasParameter("stop"))
                 return new(400, "Bad Request", "Request have both id and stop parameter");
@@ -17,7 +17,7 @@ namespace TimerPlugin
                 string id = request.GetParameter("id");
                 if (!string.IsNullOrEmpty(id))
                 {
-                    if (m_TimerManager.StartTimer(id))
+                    if (await m_TimerManager.StartTimer(id))
                         return new(200, "Ok");
                     return new(404, "Not Found", string.Format("Timer \"{0}\" not found", id));
                 }
@@ -28,7 +28,7 @@ namespace TimerPlugin
                 string stop = request.GetParameter("stop");
                 if (!string.IsNullOrEmpty(stop))
                 {
-                    if (m_TimerManager.StopTimer(stop))
+                    if (await m_TimerManager.StopTimer(stop))
                         return new(200, "Ok");
                     return new(404, "Not Found", string.Format("Timer family \"{0}\" not running", stop));
                 }

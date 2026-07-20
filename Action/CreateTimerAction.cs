@@ -23,7 +23,7 @@ namespace TimerPlugin.Action
 
         private readonly TimerManager m_Manager = manager;
 
-        public override object?[] Call(object?[] args)
+        public override async Task<object?[]> Call(object?[] args)
         {
             AdsInfo? ads = null;
             int adsDuration = (int)args[7]!;

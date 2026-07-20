@@ -16,13 +16,13 @@ namespace TimerPlugin
             SetDuration(TimeSpan.FromSeconds(timer.Duration - 1));
         }
 
-        protected override void OnActionStart()
+        protected override async Task OnActionStart()
         {
-            base.OnActionStart();
-            OnActionUpdate(TimeSpan.Zero);
+            await base.OnActionStart();
+            await OnActionUpdate(TimeSpan.Zero);
         }
 
-        protected override void OnActionUpdate(TimeSpan elapsed)
+        protected override async Task OnActionUpdate(TimeSpan elapsed)
         {
             TimeSpan remainingTime = Duration - elapsed;
             StreamGlassContext streamGlassContext = new();
@@ -34,15 +34,15 @@ namespace TimerPlugin
             context.AddVariable("s", remainingTime.Seconds);
             context.AddVariable("ss", string.Format("{0:D2}", remainingTime.Seconds));
             StreamGlassContext.UpdateStringSource(m_Timer.StringSource, Converter.Convert(m_Timer.Format, streamGlassContext, context));
-            base.OnActionUpdate(elapsed);
+            await base.OnActionUpdate(elapsed);
         }
 
-        protected override void OnActionFinish()
+        protected override async Task OnActionFinish()
         {
             StreamGlassContext streamGlassContext = new();
             if (!string.IsNullOrEmpty(m_Timer.FinishMessage))
                 StreamGlassContext.UpdateStringSource(m_Timer.StringSource, Converter.Convert(m_Timer.FinishMessage, streamGlassContext));
-            base.OnActionFinish();
+            await base.OnActionFinish();
         }
     }
 }
